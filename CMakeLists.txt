@@ -40,20 +40,12 @@ message("")
 ########################################################################
 configure_file(${PROJECT_SOURCE_DIR}/src/unittest_config.hpp.in
   "${PROJECT_BINARY_DIR}/src/unittest_config.hpp" @ONLY)
-
-########################################################################
-# Include directories
-########################################################################
 include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
-
-########################################################################
-# Define remote repository
-########################################################################
-include(FetchContent)
 
 ########################################################################
 # GoogleTest
 ########################################################################
+include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/refs/heads/main.zip
@@ -78,7 +70,6 @@ include_directories(${bsplinelib_SOURCE_DIR}/Sources)
 ########################################################################
 # Collect unittest sources
 ########################################################################
-
 file(GLOB UNITTESTS src/*.cxx)
 
 foreach(unittest ${UNITTESTS})
