@@ -12,6 +12,10 @@
 #
 ########################################################################
 
+cmake_minimum_required (VERSION 3.24)
+
+include(FetchContent)
+
 ########################################################################
 #
 # Project: IgANet-UnitTests
@@ -22,30 +26,33 @@ project(IgANet-UnitTests)
 add_library(iganet_unittests INTERFACE)
 add_library(iganet::unittests ALIAS iganet_unittests)
 
-# Set a default coefficient numeric types if not specified
-if(NOT IGANET_UNITTESTS_COEFF_TYPE)
-  set (IGANET_UNITTESTS_COEFF_TYPE "double" CACHE STRING
-    "Coefficient type(float, double)" FORCE)
+########################################################################
+# IgANets (core)
+########################################################################
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)  
+  FetchContent_Declare(
+    iganet_core
+    GIT_REPOSITORY https://github.com/IgANets/iganet.git
+    GIT_TAG modularized
+  )
+  set(IGANET_BUILD_EXAMPLES  OFF CACHE BOOL "" FORCE)  
+  FetchContent_MakeAvailable(iganet_core)
+  FetchContent_GetProperties(iganet_core)
+  include_directories(${iganet_core_SOURCE_DIR}/include)
+  
+  ######################################################################
+  # Set C++ standard
+  ######################################################################
+  set(CMAKE_CXX_STANDARD 20)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+
+  enable_testing()
 endif()
-set_property(CACHE IGANET_UNITTESTS_COEFF_TYPE PROPERTY STRINGS
-  "float" "double")
-
-message("")
-message("UnitTests options:")
-message("IGANET_UNITTESTS_COEFF_TYPE........: ${IGANET_UNITTESTS_COEFF_TYPE}")
-message("")
-
-########################################################################
-# Config file
-########################################################################
-configure_file(${PROJECT_SOURCE_DIR}/src/unittest_config.hpp.in
-  "${PROJECT_BINARY_DIR}/src/unittest_config.hpp" @ONLY)
-include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 ########################################################################
 # GoogleTest
 ########################################################################
-include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/refs/heads/main.zip
@@ -66,6 +73,30 @@ set(pugixml_DIR ${pugixml_BINARY_DIR})
 FetchContent_MakeAvailable(googletest bsplinelib)
 FetchContent_GetProperties(bsplinelib)
 include_directories(${bsplinelib_SOURCE_DIR}/Sources)
+
+########################################################################
+# Options
+########################################################################
+# Set a default coefficient numeric types if not specified
+if(NOT IGANET_UNITTESTS_COEFF_TYPE)
+  set (IGANET_UNITTESTS_COEFF_TYPE "double" CACHE STRING
+    "Coefficient type(float, double)" FORCE)
+endif()
+set_property(CACHE IGANET_UNITTESTS_COEFF_TYPE PROPERTY STRINGS
+  "float" "double")
+
+message("")
+message("UnitTests options:")
+message("IGANET_UNITTESTS_COEFF_TYPE........: ${IGANET_UNITTESTS_COEFF_TYPE}")
+message("")
+
+########################################################################
+# Config file
+########################################################################
+configure_file(${PROJECT_SOURCE_DIR}/src/unittest_config.hpp.in
+  "${PROJECT_BINARY_DIR}/src/unittest_config.hpp" @ONLY)
+
+include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 ########################################################################
 # Collect unittest sources
