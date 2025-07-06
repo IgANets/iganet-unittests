@@ -12,6 +12,16 @@
 #
 ########################################################################
 
+########################################################################
+#
+# Project: IgANet-UnitTests
+#
+########################################################################
+project(IgANet-UnitTests)
+
+add_library(iganet_unittests INTERFACE)
+add_library(iganet::unittests ALIAS iganet_unittests)
+
 # Set a default coefficient numeric types if not specified
 if(NOT IGANET_UNITTESTS_COEFF_TYPE)
   set (IGANET_UNITTESTS_COEFF_TYPE "double" CACHE STRING
@@ -20,6 +30,7 @@ endif()
 set_property(CACHE IGANET_UNITTESTS_COEFF_TYPE PROPERTY STRINGS
   "float" "double")
 
+message("")
 message("UnitTests options:")
 message("IGANET_UNITTESTS_COEFF_TYPE........: ${IGANET_UNITTESTS_COEFF_TYPE}")
 message("")
@@ -27,13 +38,13 @@ message("")
 ########################################################################
 # Config file
 ########################################################################
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/unittest_config.hpp.in
-  "${CMAKE_CURRENT_BINARY_DIR}/unittest_config.hpp" @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/src/unittest_config.hpp.in
+  "${PROJECT_BINARY_DIR}/src/unittest_config.hpp" @ONLY)
 
 ########################################################################
 # Include directories
 ########################################################################
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 ########################################################################
 # Define remote repository
@@ -68,9 +79,7 @@ include_directories(${bsplinelib_SOURCE_DIR}/Sources)
 # Collect unittest sources
 ########################################################################
 
-add_custom_target(iganet_unittests)
-
-file(GLOB UNITTESTS *.cxx)
+file(GLOB UNITTESTS src/*.cxx)
 
 foreach(unittest ${UNITTESTS})
 
@@ -82,39 +91,12 @@ foreach(unittest ${UNITTESTS})
     target_precompile_headers(${name} REUSE_FROM iganet_pch)
   endif()
 
-  target_compile_options(${name} PUBLIC "-DIGANET_DATA_DIR=\"${PROJECT_SOURCE_DIR}/filedata/\"")
-
-  # LibTorch
-  target_link_libraries(${name} PUBLIC "${TORCH_LIBRARIES}")
-  target_link_libraries(${name} PUBLIC pugixml)
-
-  # Intel Extension for PyTorch
-  if (NOT IGANET_BUILD_CPUONLY AND IPEX_FOUND)
-    target_link_libraries(${name} PUBLIC ${TORCH_IPEX_LIBRARIES})
-  endif()
-
-  # BSplineLib
-  target_link_libraries(${name} PUBLIC splines)
-
-  # Google test
-  target_link_libraries(${name} PUBLIC gtest_main)
-
-  if (IGANET_WITH_GISMO)
-    target_link_libraries(${name} PUBLIC gismo_static)
-  endif()
-
-  if (IGANET_WITH_MATPLOT)
-    target_link_libraries(${name} PUBLIC Matplot++::matplot)
-  endif()
-
-  if (IGANET_WITH_MPI)
-    target_link_libraries(${name} PUBLIC MPI::MPI_CXX)
-  endif()
-
-  if (IGANET_WITH_OPENMP)
-    target_link_libraries(${name} PUBLIC OpenMP::OpenMP_CXX)
-  endif()
-
-  target_compile_definitions(${name} PUBLIC UNITTEST_DISABLE_SHORT_MACROS)
+  target_compile_options(${name} PRIVATE "-DIGANET_DATA_DIR=\"${PROJECT_SOURCE_DIR}/filedata/\"")
+  target_link_libraries(${name} PRIVATE iganet::core)
+  target_link_libraries(${name} PRIVATE splines)
+  target_link_libraries(${name} PRIVATE gtest_main)
+  target_compile_definitions(${name} PRIVATE UNITTEST_DISABLE_SHORT_MACROS)
+  
   add_test(${name} ${name})
+  
 endforeach()
