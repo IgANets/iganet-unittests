@@ -124,7 +124,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DTorch_DIR=$HOME/libtorch/share/cmake/Torch
         -DIGANET_WITH_OPENMP=OFF
-        -S ${{ github.workspace }}        
+        -S ${{ github.workspace }}
 
     - name: Configure CMake - Windows / Cl
       if: matrix.os == 'windows-latest'
