@@ -14,8 +14,6 @@
 
 cmake_minimum_required (VERSION 3.24)
 
-include(FetchContent)
-
 ########################################################################
 #
 # Project: IgANet-UnitTests
@@ -29,7 +27,8 @@ add_library(iganet::unittests ALIAS iganet_unittests)
 ########################################################################
 # IgANets (core)
 ########################################################################
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)  
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  include(FetchContent)
   FetchContent_Declare(
     iganet_core
     GIT_REPOSITORY https://github.com/IgANets/iganet.git
@@ -51,7 +50,8 @@ endif()
 
 ########################################################################
 # GoogleTest
-########################################################################
+#######################################################################
+include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/refs/heads/main.zip
@@ -62,6 +62,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 ########################################################################
 # BSplineLib
 ########################################################################
+include(FetchContent)
 FetchContent_Declare(
   bsplinelib
   URL https://github.com/tataratat/BSplineLib/archive/refs/heads/main.zip

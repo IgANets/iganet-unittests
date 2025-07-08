@@ -37,6 +37,9 @@ jobs:
             c_compiler: clang
             cpp_compiler: clang++
           - os: macos-latest
+            c_compiler: gcc
+            cpp_compiler: gcc++
+          - os: macos-latest
             c_compiler: clang
             cpp_compiler: clang++
         exclude:
@@ -72,9 +75,7 @@ jobs:
     - name: Install PyTorch - MacOS
       if: matrix.os == 'macos-latest'
       run: >
-        wget https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.7.1.zip -O libtorch.zip &&
-        unzip libtorch.zip -d $HOME &&
-        rm -f libtorch.zip
+        brew install pytorch
 
     - name: Install PyTorch - Windows
       if: matrix.os == 'windows-latest'
@@ -124,7 +125,6 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DTorch_DIR=$HOME/libtorch/share/cmake/Torch
         -DIGANET_WITH_OPENMP=OFF
         -S ${{ github.workspace }}
 
