@@ -99,7 +99,7 @@ configure_file(${PROJECT_SOURCE_DIR}/src/unittest_config.hpp.in
 include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 ########################################################################
-# Collect unittest sources
+# Collect unit test sources
 ########################################################################
 file(GLOB UNITTESTS src/*.cxx)
 
