@@ -38,7 +38,6 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   set(IGANET_BUILD_EXAMPLES  OFF CACHE BOOL "" FORCE)  
   FetchContent_MakeAvailable(iganet_core)
   FetchContent_GetProperties(iganet_core)
-  include_directories(${iganet_core_SOURCE_DIR}/include)
   
   ######################################################################
   # Set C++ standard
@@ -72,7 +71,7 @@ set(BSPLINELIB_BUILD_PUGIXML OFF CACHE BOOL "" FORCE)
 set(pugixml_DIR ${pugixml_BINARY_DIR})
 FetchContent_MakeAvailable(googletest bsplinelib)
 FetchContent_GetProperties(bsplinelib)
-include_directories(${bsplinelib_SOURCE_DIR}/Sources)
+target_include_directories(iganet_unittests INTERFACE ${bsplinelib_SOURCE_DIR}/Sources)
 
 ########################################################################
 # Options
@@ -96,7 +95,7 @@ message("")
 configure_file(${PROJECT_SOURCE_DIR}/src/unittest_config.hpp.in
   "${PROJECT_BINARY_DIR}/src/unittest_config.hpp" @ONLY)
 
-include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
+target_include_directories(iganet_unittests INTERFACE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 ########################################################################
 # Collect unit test sources
@@ -115,8 +114,7 @@ foreach(unittest ${UNITTESTS})
 
   target_compile_options(${name} PRIVATE "-DIGANET_DATA_DIR=\"${PROJECT_SOURCE_DIR}/filedata/\"")
   target_link_libraries(${name} PRIVATE iganet::core)
-  target_link_libraries(${name} PRIVATE splines)
-  target_link_libraries(${name} PRIVATE gtest_main)
+  target_link_libraries(${name} PRIVATE iganet::unittests)
   target_compile_definitions(${name} PRIVATE UNITTEST_DISABLE_SHORT_MACROS)
   
   add_test(${name} ${name})
