@@ -82,7 +82,7 @@ jobs:
         Remove-Item -Path "libtorch.zip" -Force
 
     - name: Install Clang 17 - Linux
-      if: matrix.os == 'ubuntu-latest'
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'clang' }}
       run: |
         wget https://apt.llvm.org/llvm.sh
         chmod +x ./llvm.sh
