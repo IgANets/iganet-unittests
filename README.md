@@ -16,7 +16,10 @@ This repository can be used in two modes:
 
 1. As standalone unit tests by running CMake on _this_ repository without flags
 
-2. As optional module in IgANets::core by running CMake on IgANets::core with the flag `-DIGANET_BUILD_UNITTESTS=ON`
+2. As optional module in [IgANets::core](https://github.com/iganets/iganet) by running CMake on the [IgANets::core](https://github.com/iganets/iganet) repository with the flag
+   ```
+   -DIGANET_OPTIONAL="unittests"
+   ```
 
 In both cases, the tests can be run via
 ```shell
