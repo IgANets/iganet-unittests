@@ -43,8 +43,6 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   set(CMAKE_CXX_STANDARD 20)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_EXTENSIONS OFF)
-
-  enable_testing()
 endif()
 
 ########################################################################
@@ -100,6 +98,7 @@ target_include_directories(iganet_unittests INTERFACE ${PROJECT_SOURCE_DIR}/src 
 ########################################################################
 # Collect unit test sources
 ########################################################################
+enable_testing()
 file(GLOB UNITTESTS src/*.cxx)
 
 foreach(unittest ${UNITTESTS})
