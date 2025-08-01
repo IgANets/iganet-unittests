@@ -25,7 +25,7 @@ project(IgANet-UnitTests)
 
 add_library(iganet_unittests INTERFACE)
 add_library(iganet::unittests ALIAS iganet_unittests)
-target_include_directories(iganet_examples INTERFACE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
+target_include_directories(iganet_unittests INTERFACE ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 ########################################################################
 # IgANets (core)
